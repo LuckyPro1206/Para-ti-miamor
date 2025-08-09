@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Números a Imagen</title>
+</head>
+<body>
+<h2>Convertir números a imagen</h2>
+
+<textarea id="numbersInput" rows="6" cols="50" placeholder="Pega aquí los números separados por comas"></textarea><br>
+<label>Ancho de imagen (px): <input type="number" id="width" value="10"></label><br>
+<label>Alto de imagen (px): <input type="number" id="height" value="10"></label><br>
+<button onclick="drawImage()">Generar Imagen</button>
+
+<br><br>
+<canvas id="canvas"></canvas>
+
+<script>
+function drawImage() {
+    const numbers = document.getElementById("numbersInput").value
+        .split(",")
+        .map(n => parseInt(n.trim()));
+
+    const width = parseInt(document.getElementById("width").value);
+    const height = parseInt(document.getElementById("height").value);
+
+    if (numbers.length !== width * height) {
+        alert("La cantidad de números no coincide con el ancho*alto");
+        return;
+    }
+
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+    canvas.width = width;
+    canvas.height = height;
+
+    const imgData = ctx.createImageData(width, height);
+
+    // Supongamos que los números son de 1 a 6 (escala de grises)
+    for (let i = 0; i < numbers.length; i++) {
+        const val = (numbers[i] - 1) * 42; // mapea 1..6 → 0..255 aprox
+        imgData.data[i * 4] = val;     // R
+        imgData.data[i * 4 + 1] = val; // G
+        imgData.data[i * 4 + 2] = val; // B
+        imgData.data[i * 4 + 3] = 255; // Alpha
+    }
+
+    ctx.putImageData(imgData, 0, 0);
+}
+</script>
+</body>
+</html>
